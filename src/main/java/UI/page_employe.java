@@ -1,5 +1,7 @@
 package UI;
 
+import org.example.employe;
+import db.employedb;
 import javax.swing.*;
 import java.awt.*;
 
@@ -31,6 +33,24 @@ public class page_employe extends JFrame {
         buttons.add(insert);
         buttons.add(delete);
         buttons.add(search);
+
+        insert.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(fields[0].getText());
+                String nom = fields[1].getText();
+                String prenom = fields[2].getText();
+                String poste = fields[3].getText();
+                double salaire = Double.parseDouble(fields[4].getText());
+                int idDept = Integer.parseInt(fields[5].getText());
+                employe emp = new employe(id, nom, prenom, poste, salaire, idDept);
+                employedb.insertemploye(emp);
+                JOptionPane.showMessageDialog(this, "Employé inséré avec succès !");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage());
+            }
+        });
+
+
 
         add(scrollPane, BorderLayout.NORTH);
         add(form, BorderLayout.CENTER);
