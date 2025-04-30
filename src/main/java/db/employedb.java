@@ -46,7 +46,7 @@ public class employedb {
                 return new employe(
                         rs.getInt("id_employe"),
                         rs.getString("nom"),
-                        rs.getString("prénom"),
+                        rs.getString("prenom"),
                         rs.getString("poste"),
                         rs.getDouble("salaire"),
                         rs.getInt("id_departement")
@@ -68,7 +68,7 @@ public class employedb {
                 employe e = new employe(
                         rs.getInt("id_employe"),
                         rs.getString("nom"),
-                        rs.getString("prénom"),
+                        rs.getString("prenom"),
                         rs.getString("poste"),
                         rs.getDouble("salaire"),
                         rs.getInt("id_departement")

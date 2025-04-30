@@ -6,14 +6,14 @@ import java.sql.*;
 public class requetesdb {
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "BDDAdmin", "TPAdmin");
+        return dbconnection.getConnection();
     }
 
     public static DefaultTableModel requete1_employesParProjet(int idProjet) throws SQLException {
         String sql = """
-            SELECT e.nom, e.prénom
-            FROM Employé e
-            JOIN Travail t ON e.id_employé = t.id_employé
+            SELECT e.nom, e.prenom
+            FROM Employe e
+            JOIN Travail t ON e.id_employe = t.id_employe
             WHERE t.id_projet = ?
         """;
         try (Connection conn = getConnection();
@@ -27,9 +27,9 @@ public class requetesdb {
 
     public static DefaultTableModel requete2_employesSansProjet() throws SQLException {
         String sql = """
-            SELECT nom, prénom
-            FROM Employé
-            WHERE id_employé NOT IN (SELECT id_employé FROM Travail)
+            SELECT nom, prenom
+            FROM Employe
+            WHERE id_employe NOT IN (SELECT id_employe FROM Travail)
         """;
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -55,12 +55,12 @@ public class requetesdb {
 
     public static DefaultTableModel requete4_employesProjetUnique(String nomProjet) throws SQLException {
         String sql = """
-            SELECT e.nom, e.prénom
-            FROM Employé e
-            JOIN Travail t ON e.id_employé = t.id_employé
+            SELECT e.nom, e.prenom
+            FROM Employe e
+            JOIN Travail t ON e.id_employe = t.id_employe
             JOIN Projet p ON t.id_projet = p.id_projet
             WHERE p.nom_projet = ?
-            GROUP BY e.id_employé, e.nom, e.prénom
+            GROUP BY e.id_employe, e.nom, e.prenom
             HAVING COUNT(*) = 1
         """;
         try (Connection conn = getConnection();
@@ -74,10 +74,10 @@ public class requetesdb {
 
     public static DefaultTableModel requete5_nbProjetsParEmploye() throws SQLException {
         String sql = """
-            SELECT e.nom, e.prénom, COUNT(t.id_projet) AS nb_projets
-            FROM Employé e
-            LEFT JOIN Travail t ON e.id_employé = t.id_employé
-            GROUP BY e.nom, e.prénom
+            SELECT e.nom, e.prenom, COUNT(t.id_projet) AS nb_projets
+            FROM Employe e
+            LEFT JOIN Travail t ON e.id_employe = t.id_employe
+            GROUP BY e.id_employe, e.nom, e.prenom
         """;
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

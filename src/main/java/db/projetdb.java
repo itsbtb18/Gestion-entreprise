@@ -8,68 +8,62 @@ import java.util.List;
 public class projetdb {
 
     public static boolean insertprojet(projet p) throws SQLException {
-        Connection con = dbconnection.getConnection();
-        String sql = "INSERT INTO Projet VALUES (?, ?, ?, ?)";
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, p.getId());
-        ps.setString(2, p.getNom());
-        ps.setDouble(3, p.getBudget());
-        ps.setInt(4, p.getIdDepartement());
-        int result = ps.executeUpdate();
-        ps.close();
-        con.close();
-        return result > 0;
+        try (Connection con = dbconnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("INSERT INTO Projet VALUES (?, ?, ?, ?)")) {
+
+            ps.setInt(1, p.getId());
+            ps.setString(2, p.getNom());
+            ps.setDouble(3, p.getBudget());
+            ps.setInt(4, p.getIdDepartement());
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
     }
 
     public static boolean deleteProjet(int id) throws SQLException {
-        Connection con = dbconnection.getConnection();
-        String sql = "DELETE FROM Projet WHERE id_projet = ?";
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, id);
-        int result = ps.executeUpdate();
-        ps.close();
-        con.close();
-        return result > 0;
+        try (Connection con = dbconnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("DELETE FROM Projet WHERE id_projet = ?")) {
+
+            ps.setInt(1, id);
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
     }
 
     public static projet findById(int id) throws SQLException {
-        Connection con = dbconnection.getConnection();
-        String sql = "SELECT * FROM Projet WHERE id_projet = ?";
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, id);
-        ResultSet rs = ps.executeQuery();
-        projet p = null;
-        if (rs.next()) {
-            p = new projet(
-                    rs.getInt(1),
-                    rs.getString(2),
-                    rs.getDouble(3),
-                    rs.getInt(4)
-            );
+        try (Connection con = dbconnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("SELECT * FROM Projet WHERE id_projet = ?")) {
+
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            projet p = null;
+            if (rs.next()) {
+                p = new projet(
+                        rs.getInt("id_projet"),
+                        rs.getString("nom_projet"),
+                        rs.getDouble("budget"),
+                        rs.getInt("id_departement")
+                );
+            }
+            return p;
         }
-        rs.close();
-        ps.close();
-        con.close();
-        return p;
     }
 
     public static List<projet> getAllProjets() throws SQLException {
-        Connection con = dbconnection.getConnection();
-        String sql = "SELECT * FROM Projet";
-        Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery(sql);
         List<projet> list = new ArrayList<>();
-        while (rs.next()) {
-            list.add(new projet(
-                    rs.getInt(1),
-                    rs.getString(2),
-                    rs.getDouble(3),
-                    rs.getInt(4)
-            ));
+        try (Connection con = dbconnection.getConnection();
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery("SELECT * FROM Projet")) {
+
+            while (rs.next()) {
+                list.add(new projet(
+                        rs.getInt("id_projet"),
+                        rs.getString("nom_projet"),
+                        rs.getDouble("budget"),
+                        rs.getInt("id_departement")
+                ));
+            }
+            return list;
         }
-        rs.close();
-        st.close();
-        con.close();
-        return list;
     }
 }

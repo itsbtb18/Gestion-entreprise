@@ -3,13 +3,13 @@ package db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.nio.file.Paths;
 
 public class dbconnection {
-    private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
-    private static final String USER = "BDDAdmin";
-    private static final String PASSWORD = "TPAdmin";
+    private static final String DB_PATH = Paths.get("src", "data", "database.db").toString();
+    private static final String URL = "jdbc:sqlite:" + DB_PATH;
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        return DriverManager.getConnection(URL);
     }
 }
